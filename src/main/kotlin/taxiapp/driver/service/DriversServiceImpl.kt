@@ -39,12 +39,7 @@ class DriversServiceImpl @Autowired constructor(
 
     override fun getAllDrivers(): ResponseInterface {
         var drivers = driversRepository.findAll()
-        if (drivers.isEmpty()) {
-            return ResultTO(
-                httpStatus = HttpStatus.NOT_FOUND,
-                messages = listOf("No drivers found.")
-            )
-        }
+
         val driversData = drivers.map{ driver -> 
             DriverData(
                 DriverPersonalData(
@@ -79,12 +74,6 @@ class DriversServiceImpl @Autowired constructor(
 
         val verifiedDrivers = drivers
             .filter { it.verified }
-        if (verifiedDrivers.size == 0) {
-            return ResultTO(
-                httpStatus = HttpStatus.NOT_FOUND,
-                messages = listOf("No verified drivers found.")
-            )
-        }
 
         val driversData = verifiedDrivers.map{ driver -> 
             DriverData(

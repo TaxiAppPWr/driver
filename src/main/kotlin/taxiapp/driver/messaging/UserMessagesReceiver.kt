@@ -1,6 +1,5 @@
 package taxiapp.driver.messaging
 
-import taxiapp.driver.dto.event.DriverCreatedEvent
 import taxiapp.driver.dto.event.DriverAuthenticationApprovedEvent
 import taxiapp.driver.dto.event.UserConfirmedEvent
 import taxiapp.driver.service.DriversService

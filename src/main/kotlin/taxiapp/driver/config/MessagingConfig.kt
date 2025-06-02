@@ -1,13 +1,12 @@
-package taxiapp.driver.configuration
+package taxiapp.driver.config
 
-import org.springframework.amqp.core.Binding
-import org.springframework.amqp.core.BindingBuilder
-import org.springframework.amqp.core.Queue
-import org.springframework.amqp.core.QueueBuilder
-import org.springframework.amqp.core.TopicExchange
+import org.springframework.amqp.core.*
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
+import org.springframework.amqp.support.converter.MessageConverter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+
 
 @Configuration
 class MessagingConfig {
@@ -17,8 +16,12 @@ class MessagingConfig {
     @Value("\${rabbit.queue.driver.name}")
     private val driverQueueName: String? = null
 
-    @Value("\${rabbit.topic.drivers.created}")
-    private val driverCreatedTopic: String? = null
+    @Value("\${rabbit.topic.cognito.user.confirmed}")
+    private val userConfirmedTopic: String? = null
+
+    @Value("\${rabbit.topic.driver-auth.approved}")
+    private val driverAuthApprovedTopic: String? = null
+
 
     @Bean
     fun exchange(): TopicExchange {
@@ -31,8 +34,12 @@ class MessagingConfig {
     }
 
     @Bean
-    fun driverUserBinding(exchange: TopicExchange, driverAuthQueue: Queue): Binding {
-        return BindingBuilder.bind(driverAuthQueue).to(exchange).with("$driverCreatedTopic")
+    fun cognitoUserBinding(exchange: TopicExchange, driverAuthQueue: Queue): Binding {
+        return BindingBuilder.bind(driverAuthQueue).to(exchange).with("$userConfirmedTopic")
     }
 
+    @Bean
+    fun driverAuthBinding(exchange: TopicExchange, driverAuthQueue: Queue): Binding {
+        return BindingBuilder.bind(driverAuthQueue).to(exchange).with("$driverAuthApprovedTopic")
+    }
 }

@@ -1,5 +1,6 @@
 package taxiapp.driver.service
 
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -26,10 +27,12 @@ import taxiapp.driver.dto.response.DriverListTO
 import taxiapp.driver.dto.response.DriverPersonalInfoListTO
 import taxiapp.driver.model.Driver
 import taxiapp.driver.model.DriverLegalInfo
+import taxiapp.driver.repository.DriverLegalInfoRepository
 
 @Service
 class DriversServiceImpl @Autowired constructor(
     private val driversRepository: DriversRepository,
+    private val driverLegalInfoRepository: DriverLegalInfoRepository,
     val exchange: TopicExchange,
     val template: RabbitTemplate
 ) : DriversService {
@@ -102,6 +105,7 @@ class DriversServiceImpl @Autowired constructor(
     }
     
 
+    @Transactional
     override fun addDriver(user: UserConfirmedEvent) {
         if (!user.isDriver) {
             return
@@ -155,6 +159,7 @@ class DriversServiceImpl @Autowired constructor(
         return DriverPersonalInfoListTO(driversPersonalData, HttpStatus.OK)
     }
 
+    @Transactional
     override fun driverVerified(approvedEvent: DriverAuthenticationApprovedEvent) {
         val driver = driversRepository.findByUsername(approvedEvent.username)
 
@@ -174,6 +179,8 @@ class DriversServiceImpl @Autowired constructor(
             country = approvedEvent.address.country
         )
 
+        driverLegalInfoRepository.save(legalInfo);
+
         driver.driverLegalInfo = legalInfo;
         driver.verified = true;
 
@@ -184,6 +191,8 @@ class DriversServiceImpl @Autowired constructor(
             username = driver.username,
             verificationStatus = driver.verified
         )
+
+        // TODO: finish implementation of driverVerified method
     }
 
 }

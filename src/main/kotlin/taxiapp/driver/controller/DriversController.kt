@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import taxiapp.driver.service.DriversService
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/drivers")
 class DriversController @Autowired constructor(
     private val driversService: DriversService 
 ){    
-    @GetMapping("/drivers/verified")
+    @GetMapping("/verified")
     fun getVerifiedDrivers(): ResponseEntity<Any> {
         return ResponseEntity.ok(driversService.getVerifiedDrivers());
     }
 
-    @GetMapping("/drivers/all")
+    @GetMapping("/all")
     fun getAll(): ResponseEntity<Any> { 
         return ResponseEntity.ok(driversService.getAllDrivers());
     }

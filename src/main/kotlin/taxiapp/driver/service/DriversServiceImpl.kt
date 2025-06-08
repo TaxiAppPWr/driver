@@ -161,10 +161,7 @@ class DriversServiceImpl @Autowired constructor(
 
     @Transactional
     override fun driverVerified(approvedEvent: DriverAuthenticationApprovedEvent) {
-        val driver = driversRepository.findByUsername(approvedEvent.username)
-
-        if (driver == null)
-            return;
+        val driver = driversRepository.findByUsername(approvedEvent.username) ?: return
 
         val legalInfo = DriverLegalInfo(
             driverLicenceNumber = approvedEvent.driverLicenceNumber,

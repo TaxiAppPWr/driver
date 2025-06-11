@@ -189,7 +189,43 @@ class DriversServiceImpl @Autowired constructor(
             verificationStatus = driver.verified
         )
 
-        // TODO: finish implementation of driverVerified method
+        template.convertAndSend(event)
+    }
+
+    override fun getDriverByUsername(username: String): ResponseInterface {
+        val driver = driversRepository.findByUsername(username)
+        if (driver == null) {
+            return ResultTO(
+                httpStatus = HttpStatus.NOT_FOUND,
+                messages = listOf("Driver with username $username not found.")
+            )
+        }
+
+        val driverTO = DriverTO(
+            DriverPersonalData(
+                username = driver.username,
+                firstname = driver.firstname,
+                lastname = driver.lastname,
+                email = driver.email,
+                phoneNumber = driver.phoneNumber
+            ),
+            if (driver.driverLegalInfo != null)
+                DriverLegalData(
+                    driverLicenceNumber = driver.driverLegalInfo!!.driverLicenceNumber ,
+                    registrationDocumentNumber = driver.driverLegalInfo!!.registration_document_number ,
+                    plateNumber = driver.driverLegalInfo!!.plateNumber ,
+                    pesel = driver.driverLegalInfo!!.pesel ,
+                    street = driver.driverLegalInfo!!.street ,
+                    buildingNumber = driver.driverLegalInfo!!.buildingNumber ,
+                    apartmentNumber = driver.driverLegalInfo!!.apartmentNumber ,
+                    postCode = driver.driverLegalInfo!!.postCode ,
+                    country = driver.driverLegalInfo!!.country
+                )
+            else
+                null
+        )
+
+        return driverTO
     }
 
 }

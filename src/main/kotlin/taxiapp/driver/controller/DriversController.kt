@@ -9,7 +9,11 @@ import taxiapp.driver.service.DriversService
 @RequestMapping("api/drivers")
 class DriversController @Autowired constructor(
     private val driversService: DriversService 
-){    
+){
+    @GetMapping("")
+    fun getDriverByUsername(@RequestParam username: String): ResponseEntity<Any> {
+        return ResponseEntity.ok(driversService.getDriverByUsername(username));
+    }
     @GetMapping("/verified")
     fun getVerifiedDrivers(): ResponseEntity<Any> {
         return ResponseEntity.ok(driversService.getVerifiedDrivers());

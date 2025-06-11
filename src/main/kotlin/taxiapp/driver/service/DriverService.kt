@@ -18,4 +18,5 @@ interface DriversService {
     fun addDriver(user: UserConfirmedEvent)
 
     fun driverVerified(approvedEvent: DriverAuthenticationApprovedEvent)
+    fun getDriverByUsername(username: String): ResponseInterface
 }
